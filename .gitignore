@@ -2,7 +2,9 @@
 .vs
 
 #ignore obj folder
-obj
+JHACodeChallenge/obj
+JHACodeChallengeTest/obj
 
 #ignore debug folder
-debug
+JHACodeChallenge/bin/Debug
+JHACodeChallengeTest/bin/Debug
