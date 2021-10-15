@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JHACodeChallenge", "JHACodeChallenge\JHACodeChallenge.csproj", "{9547A3E1-21C1-4333-88E5-528E702EF952}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JHACodeChallengeTest", "JHACodeChallengeTest\JHACodeChallengeTest.csproj", "{CABCB4F7-E68D-4446-A79B-6764183D8098}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9547A3E1-21C1-4333-88E5-528E702EF952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9547A3E1-21C1-4333-88E5-528E702EF952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9547A3E1-21C1-4333-88E5-528E702EF952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9547A3E1-21C1-4333-88E5-528E702EF952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CABCB4F7-E68D-4446-A79B-6764183D8098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CABCB4F7-E68D-4446-A79B-6764183D8098}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CABCB4F7-E68D-4446-A79B-6764183D8098}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CABCB4F7-E68D-4446-A79B-6764183D8098}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {015BC8E0-9DCD-4FDB-8C26-5319A5EE2EDF}
+	EndGlobalSection
+EndGlobal
