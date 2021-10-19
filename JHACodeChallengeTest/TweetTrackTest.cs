@@ -3,6 +3,8 @@ using Xunit;
 using JHACodeChallenge;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace JHACodeChallengeTest
 {
@@ -11,7 +13,8 @@ namespace JHACodeChallengeTest
         [Fact]
         public void FindEmojisInText_should_not_return_null()
         {
-            TweetTrack track = new TweetTrack(null, null);
+            
+            TweetTrack track = new TweetTrack(null, null, NullLoggerFactory.Instance);
             List<string> lst = track.FindEmojisInText("");
             Assert.NotNull(lst);
         }
@@ -21,7 +24,7 @@ namespace JHACodeChallengeTest
         [InlineData("谢😒😒",2)]
         public void FindEmojisInText_shouldSearch(string text, int expected)
         {
-            TweetTrack track = new TweetTrack(null, null);
+            TweetTrack track = new TweetTrack(null, null, NullLoggerFactory.Instance);
             List<string> lst = track.FindEmojisInText(text);
             Assert.Equal(lst.Count, expected);
         }

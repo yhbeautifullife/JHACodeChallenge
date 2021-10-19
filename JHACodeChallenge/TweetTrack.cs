@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,13 @@ namespace JHACodeChallenge
     {
         private ICacheMemory _cache;
         private IConfiguration _config;
-        private TweetCountInfo TweetCntInfo = new TweetCountInfo();
-
-        public TweetTrack(ICacheMemory cache, IConfiguration config)
+        private readonly ILogger<TweetTrack> _logger;
+        
+        public TweetTrack(ICacheMemory cache, IConfiguration config, ILoggerFactory loggerFactory)
         {
             _cache = cache;
             _config = config;
+            _logger = loggerFactory.CreateLogger<TweetTrack>();
         }
 
         /*public async Task Process(string tweet_line)
@@ -64,7 +66,7 @@ namespace JHACodeChallenge
                         DateTime dt_created_at = DateTime.Parse(created_at);
 
                         // load data from cache memory
-                        TweetCntInfo = _cache.Get<TweetCountInfo>(cache_key);
+                        TweetCountInfo TweetCntInfo = _cache.Get<TweetCountInfo>(cache_key);
                         if (TweetCntInfo == null)
                         {
                             TweetCntInfo = new TweetCountInfo();
@@ -75,25 +77,28 @@ namespace JHACodeChallenge
 
                         // increase total count
                         TweetCntInfo.total_count += 1;
+                        TweetCntInfo.last_utc_time = dt_created_at; // record tweet created time for reporting later
 
+                        #region not_used
                         // it saved count for each second period, do I need it?? maynot need it, just left here
-                        if (TweetCntInfo.dicTweetCount.Count > 0)
-                        {
-                            var last_pair = TweetCntInfo.dicTweetCount.OrderBy(o => o.Key).Last();
-                            DateTime dtTmp = TweetCntInfo.last_utc_time.AddSeconds(1);
-                            if (dt_created_at <= dtTmp) // within 1 second
-                                TweetCntInfo.dicTweetCount[last_pair.Key] += 1;
-                            else
-                            {
-                                TweetCntInfo.dicTweetCount[last_pair.Key + 1] = 1;
-                                TweetCntInfo.last_utc_time = dt_created_at;
-                            }
-                        }
-                        else
-                        {
-                            TweetCntInfo.dicTweetCount[1] = 1;
-                            TweetCntInfo.last_utc_time = dt_created_at;
-                        }
+                        //if (TweetCntInfo.dicTweetCount.Count > 0)
+                        //{
+                        //    var last_pair = TweetCntInfo.dicTweetCount.OrderBy(o => o.Key).Last();
+                        //    DateTime dtTmp = TweetCntInfo.last_utc_time.AddSeconds(1);
+                        //    if (dt_created_at <= dtTmp) // within 1 second
+                        //        TweetCntInfo.dicTweetCount[last_pair.Key] += 1;
+                        //    else
+                        //    {
+                        //        TweetCntInfo.dicTweetCount[last_pair.Key + 1] = 1;
+                        //        TweetCntInfo.last_utc_time = dt_created_at;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    TweetCntInfo.dicTweetCount[1] = 1;
+                        //    TweetCntInfo.last_utc_time = dt_created_at;
+                        //}
+                        #endregion
 
                         _cache.Set<TweetCountInfo>(TweetCntInfo, cache_key);
                     }
@@ -106,8 +111,8 @@ namespace JHACodeChallenge
                 string err_message = $"ProcessTweetCountInfo exception: {ex.Message.ToString()}";
                 // it should saved in log file in the future, now just display it in the console.
                 Console.WriteLine(err_message);
+                _logger.LogError(err_message);
             }
-
 
         }
 
@@ -164,7 +169,8 @@ namespace JHACodeChallenge
             {
                 string err_message = $"ProcessHashTagInfo exception: {ex.Message.ToString()}";
                 // it should saved in log file in the future, now just display it in the console.
-                Console.WriteLine(err_message);
+                //Console.WriteLine(err_message);
+                _logger.LogError(err_message);
             }
         }
 
@@ -220,8 +226,8 @@ namespace JHACodeChallenge
             catch (Exception ex)
             {
                 string err_message = $"ProcessURLInfo exception: {ex.Message.ToString()}";
-                // it should saved in log file in the future, now just display it in the console.
-                Console.WriteLine(err_message);
+                // save log in the file
+                _logger.LogError(err_message);
             }
         }
 
@@ -286,8 +292,7 @@ namespace JHACodeChallenge
             catch (Exception ex)
             {
                 string err_message = $"ProcessPhotoURLInfo exception: {ex.Message.ToString()}";
-                // it should saved in log file in the future, now just display it in the console.
-                Console.WriteLine(err_message);
+                _logger.LogError(err_message);
             }
         }
 
@@ -341,8 +346,7 @@ namespace JHACodeChallenge
             catch(Exception ex)
             {
                 string err_message = $"ProcessEmojiInfo exception: {ex.Message.ToString()}";
-                // it should saved in log file in the future, now just display it in the console.
-                Console.WriteLine(err_message);
+                _logger.LogError(err_message);
             }
 
 
@@ -375,6 +379,8 @@ namespace JHACodeChallenge
                         {
                             // A valid high surrogate character should between 0xd800 and 0xdbff,
                             // inclusive. (Parameter 'highSurrogate')
+                            string warning = $"FindEmojisInText {text} Exception: {ex}";
+                            _logger.LogWarning(warning);
                             continue;
                         }
                     }

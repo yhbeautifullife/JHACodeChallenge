@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace JHACodeChallenge
 {
@@ -29,12 +31,16 @@ namespace JHACodeChallenge
             IServiceCollection services = new ServiceCollection();
             var config = LoadConfiguration();
             services.AddSingleton(config);                              // register configuration
+            // add configure serilog, so that write log to file, see serilog configration setting in appSettting.json
+            services.AddLogging(o=>o.AddSerilog(new LoggerConfiguration().WriteTo.File("log.txt").CreateLogger()));  
             services.AddMemoryCache();
             services.AddSingleton<ICacheMemory, CashMemory>();
             services.AddSingleton<ITweetTrack, TweetTrack>();
             services.AddSingleton<ITwitterServices, TwitterServices>();
             services.AddSingleton<IReporting, Reporting>();
             services.AddTransient<App>();                               // register app, required to run the application
+
+            
 
             return services;
         }

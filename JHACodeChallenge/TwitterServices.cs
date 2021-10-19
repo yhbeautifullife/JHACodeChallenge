@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,14 +15,17 @@ namespace JHACodeChallenge
     {
         private readonly IConfiguration _config;
         private readonly ITweetTrack _track;
+        private readonly ILogger<TwitterServices> _logger;
 
-        public TwitterServices(IConfiguration config, ITweetTrack track)
+        public TwitterServices(IConfiguration config, ITweetTrack track, ILoggerFactory loggerFactory)
         {
             _config = config;
             _track = track;
+            _logger = loggerFactory.CreateLogger<TwitterServices>();
         }
         public async Task StreamTweets()
         {
+            _logger.LogInformation("Start Stream Tweet");
             string bearer_token = _config.GetSection("credentials:Bearer-Token").Value;
             try
             {
@@ -51,8 +55,8 @@ namespace JHACodeChallenge
                                 {
                                     while (!reader.EndOfStream)
                                     {
-                                        //Console.WriteLine(currentline); // for testing
                                         var currentline = reader.ReadLine();
+                                        //_logger.LogInformation(currentline);
                                         // analyze each line
                                         _track.Process(currentline);
                                         
@@ -67,7 +71,8 @@ namespace JHACodeChallenge
             }
             catch (Exception ex)
             {
-                Console.WriteLine("StreamTweets Exception: " + ex.Message);
+                //Console.WriteLine("StreamTweets Exception: " + ex.Message);
+                _logger.LogError("StreamTweets Exception: " + ex);
                 return;
             }
         }

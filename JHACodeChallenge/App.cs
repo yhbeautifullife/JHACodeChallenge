@@ -18,9 +18,11 @@ namespace JHACodeChallenge
             _twitter_service = twitter_service;
             _report = report;
             _config = config;
+                 
         }
         public void Run()
         {
+            //_logger.LogTrace("App start to run");
             // program will auto exit after interval set in the appsettings
             // if value is set negative (-1), program will not auto exit
             int seconds = Convert.ToInt32(_config.GetSection("appSettings:AppAutoCloseAfterMinutes").Value) * 60;
